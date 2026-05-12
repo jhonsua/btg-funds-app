@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:btg_funds_app/core/constants/app_constants.dart';
+import 'package:btg_funds_app/core/storage/storage_keys.dart';
 import 'package:btg_funds_app/features/user/data/datasources/shared_prefs_user_datasource.dart';
 import 'package:btg_funds_app/features/user/domain/entities/notification_channel.dart';
 
@@ -48,7 +49,7 @@ void main() {
         () async {
       await datasource.setUser(preferredChannel: NotificationChannel.email);
 
-      expect(prefs.getString('user.channel'), equals('email'));
+      expect(prefs.getString(StorageKeys.userChannel), equals('email'));
     });
 
     test('setBalance escribe y getBalance lee el mismo valor', () async {
@@ -56,6 +57,29 @@ void main() {
 
       expect(await datasource.getBalance(), equals(425000));
     });
+
+    test(
+      'setBalance persiste el balance como String (Etapa 4 — compat AtomicWrite)',
+      () async {
+        await datasource.setBalance(425000);
+
+        // Si fuera double-storage, prefs.getString retornaría null.
+        expect(prefs.getString(StorageKeys.userBalance), equals('425000.0'));
+      },
+    );
+
+    test(
+      'channel con valor inválido en prefs no rompe getString del balance',
+      () async {
+        SharedPreferences.setMockInitialValues({
+          StorageKeys.userBalance: '500000.0',
+        });
+        prefs = await SharedPreferences.getInstance();
+        datasource = SharedPrefsUserDatasource(prefs);
+
+        expect(await datasource.getBalance(), equals(500000));
+      },
+    );
 
     test('reset() limpia todo y deja el datasource en cold start', () async {
       await datasource.setUser(
@@ -79,7 +103,9 @@ void main() {
       'channel con valor desconocido en prefs se ignora silenciosamente',
       () async {
         // Simulamos prefs corruptas con un nombre de enum que ya no existe.
-        SharedPreferences.setMockInitialValues({'user.channel': 'whatsapp'});
+        SharedPreferences.setMockInitialValues({
+          StorageKeys.userChannel: 'whatsapp',
+        });
         prefs = await SharedPreferences.getInstance();
         datasource = SharedPrefsUserDatasource(prefs);
 
