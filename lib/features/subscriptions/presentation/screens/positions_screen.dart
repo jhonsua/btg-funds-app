@@ -86,11 +86,24 @@ class PositionsScreen extends ConsumerWidget {
               itemCount: subs.length,
               itemBuilder: (ctx, index) {
                 final sub = subs[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                  child: PositionCard(
-                    subscription: sub,
-                    onTap: () => _onCancel(context, ref, sub),
+                return TweenAnimationBuilder<double>(
+                  key: ValueKey('position-stagger-${sub.id}'),
+                  tween: Tween(begin: 0, end: 1),
+                  duration: Duration(milliseconds: 250 + index * 50),
+                  curve: Curves.easeOutCubic,
+                  builder: (context, value, child) => Opacity(
+                    opacity: value,
+                    child: Transform.translate(
+                      offset: Offset(0, 16 * (1 - value)),
+                      child: child,
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                    child: PositionCard(
+                      subscription: sub,
+                      onTap: () => _onCancel(context, ref, sub),
+                    ),
                   ),
                 );
               },

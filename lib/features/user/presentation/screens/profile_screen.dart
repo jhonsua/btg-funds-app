@@ -11,6 +11,7 @@ import 'package:btg_funds_app/features/subscriptions/presentation/providers/prov
 import 'package:btg_funds_app/features/user/domain/entities/notification_channel.dart';
 import 'package:btg_funds_app/features/user/presentation/providers/providers.dart';
 import 'package:btg_funds_app/features/user/presentation/widgets/channel_selector_sheet.dart';
+import 'package:btg_funds_app/shared/widgets/animated_press.dart';
 import 'package:btg_funds_app/shared/widgets/app_button.dart';
 import 'package:btg_funds_app/shared/widgets/app_error_view.dart';
 import 'package:btg_funds_app/shared/widgets/app_loading.dart';
@@ -181,7 +182,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Text('Tu información', style: AppTextStyles.headingMedium),
+                    const Text(
+                      'Tu información',
+                      style: AppTextStyles.headingMedium,
+                    ),
                     const SizedBox(height: AppSpacing.md),
                     TextFormField(
                       controller: _emailController,
@@ -215,7 +219,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             'Ejemplo: +57 300 123 4567.',
                       ),
                     const SizedBox(height: AppSpacing.lg),
-                    const Text('Canal preferido', style: AppTextStyles.labelSmall),
+                    const Text(
+                      'Canal preferido',
+                      style: AppTextStyles.labelSmall,
+                    ),
                     const SizedBox(height: AppSpacing.sm),
                     OutlinedButton.icon(
                       onPressed: _pickChannel,
@@ -227,9 +234,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xl),
-                    AppButton(
-                      label: 'Guardar cambios',
-                      onPressed: _canSave(isLoading: false) ? _save : null,
+                    AnimatedPress(
+                      onTap: _canSave(isLoading: false) ? _save : null,
+                      child: AppButton(
+                        label: 'Guardar cambios',
+                        onPressed: _canSave(isLoading: false) ? _save : null,
+                      ),
                     ),
                     const SizedBox(height: AppSpacing.xl),
                     const Text('Demo', style: AppTextStyles.labelSmall),

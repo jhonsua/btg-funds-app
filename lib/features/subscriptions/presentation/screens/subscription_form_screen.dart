@@ -16,6 +16,7 @@ import 'package:btg_funds_app/features/user/domain/entities/notification_channel
 import 'package:btg_funds_app/features/user/domain/entities/user_state.dart';
 import 'package:btg_funds_app/features/user/presentation/providers/providers.dart';
 import 'package:btg_funds_app/features/user/presentation/widgets/channel_selector_sheet.dart';
+import 'package:btg_funds_app/shared/widgets/animated_press.dart';
 import 'package:btg_funds_app/shared/widgets/app_button.dart';
 import 'package:btg_funds_app/shared/widgets/app_card.dart';
 import 'package:btg_funds_app/shared/widgets/app_error_view.dart';
@@ -322,10 +323,13 @@ class _FormBody extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
-            AppButton(
-              label: 'Confirmar suscripción',
-              isLoading: isSubmitting,
-              onPressed: canSubmit ? onSubmit : null,
+            AnimatedPress(
+              onTap: canSubmit ? onSubmit : null,
+              child: AppButton(
+                label: 'Confirmar suscripción',
+                isLoading: isSubmitting,
+                onPressed: canSubmit ? onSubmit : null,
+              ),
             ),
           ],
         ),
@@ -349,55 +353,58 @@ class _ChannelTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final isEmail = channel == NotificationChannel.email;
     final destination = isEmail ? user.email : user.phone;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: AppColors.surfaceElevated,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: AppColors.border),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                isEmail ? Icons.email_outlined : Icons.sms_outlined,
-                color: AppColors.brandGoldDark,
-                size: 20,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Te avisamos por',
-                      style: AppTextStyles.labelSmall.copyWith(
-                        color: AppColors.textTertiary,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      destination,
-                      style: AppTextStyles.bodyMedium,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                'Cambiar',
-                style: AppTextStyles.labelMedium.copyWith(
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(8),
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceElevated,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  isEmail ? Icons.email_outlined : Icons.sms_outlined,
                   color: AppColors.brandGoldDark,
-                  fontWeight: FontWeight.w600,
+                  size: 20,
                 ),
-              ),
-            ],
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Te avisamos por',
+                        style: AppTextStyles.labelSmall.copyWith(
+                          color: AppColors.textTertiary,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        destination,
+                        style: AppTextStyles.bodyMedium,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Cambiar',
+                  style: AppTextStyles.labelMedium.copyWith(
+                    color: AppColors.brandGoldDark,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

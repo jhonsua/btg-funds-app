@@ -52,18 +52,31 @@ class FundsListScreen extends ConsumerWidget {
                     style: AppTextStyles.headingMedium,
                   ),
                 ),
-                for (final fund in funds)
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(
-                      screenPadding(context).left,
-                      0,
-                      screenPadding(context).right,
-                      AppSpacing.sm,
+                for (var i = 0; i < funds.length; i++)
+                  TweenAnimationBuilder<double>(
+                    key: ValueKey('fund-stagger-${funds[i].id}'),
+                    tween: Tween(begin: 0, end: 1),
+                    duration: Duration(milliseconds: 250 + i * 50),
+                    curve: Curves.easeOutCubic,
+                    builder: (context, value, child) => Opacity(
+                      opacity: value,
+                      child: Transform.translate(
+                        offset: Offset(0, 16 * (1 - value)),
+                        child: child,
+                      ),
                     ),
-                    child: FundCard(
-                      fund: fund,
-                      isSubscribed: subscribedFundIds.contains(fund.id),
-                      onTap: () => context.go('/funds/${fund.id}'),
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        screenPadding(context).left,
+                        0,
+                        screenPadding(context).right,
+                        AppSpacing.sm,
+                      ),
+                      child: FundCard(
+                        fund: funds[i],
+                        isSubscribed: subscribedFundIds.contains(funds[i].id),
+                        onTap: () => context.go('/funds/${funds[i].id}'),
+                      ),
                     ),
                   ),
                 const SizedBox(height: AppSpacing.lg),

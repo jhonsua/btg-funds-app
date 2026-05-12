@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -8,6 +9,28 @@ import 'package:btg_funds_app/features/subscriptions/presentation/screens/positi
 import 'package:btg_funds_app/features/subscriptions/presentation/screens/subscription_form_screen.dart';
 import 'package:btg_funds_app/features/transactions/presentation/screens/transactions_screen.dart';
 import 'package:btg_funds_app/features/user/presentation/screens/profile_screen.dart';
+
+/// Transición premium para push routes anidadas: fade + slide horizontal
+/// sutil 5% desde la derecha (skill btg-design-system §13).
+Widget _fadeSlideTransition(
+  BuildContext context,
+  Animation<double> animation,
+  Animation<double> secondaryAnimation,
+  Widget child,
+) {
+  return FadeTransition(
+    opacity: animation,
+    child: SlideTransition(
+      position: Tween<Offset>(
+        begin: const Offset(0.05, 0),
+        end: Offset.zero,
+      ).animate(
+        CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+      ),
+      child: child,
+    ),
+  );
+}
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -25,14 +48,24 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 routes: [
                   GoRoute(
                     path: ':fundId',
-                    builder: (context, state) => FundDetailScreen(
-                      fundId: state.pathParameters['fundId']!,
+                    pageBuilder: (context, state) => CustomTransitionPage(
+                      key: state.pageKey,
+                      transitionDuration: const Duration(milliseconds: 280),
+                      transitionsBuilder: _fadeSlideTransition,
+                      child: FundDetailScreen(
+                        fundId: state.pathParameters['fundId']!,
+                      ),
                     ),
                     routes: [
                       GoRoute(
                         path: 'subscribe',
-                        builder: (context, state) => SubscriptionFormScreen(
-                          fundId: state.pathParameters['fundId']!,
+                        pageBuilder: (context, state) => CustomTransitionPage(
+                          key: state.pageKey,
+                          transitionDuration: const Duration(milliseconds: 280),
+                          transitionsBuilder: _fadeSlideTransition,
+                          child: SubscriptionFormScreen(
+                            fundId: state.pathParameters['fundId']!,
+                          ),
                         ),
                       ),
                     ],

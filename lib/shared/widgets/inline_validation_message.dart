@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:btg_funds_app/core/theme/app_colors.dart';
+import 'package:btg_funds_app/core/theme/app_elevation.dart';
 import 'package:btg_funds_app/core/theme/app_text_styles.dart';
 
 enum InlineValidationSeverity { error, warning, info }
@@ -74,6 +75,7 @@ class InlineValidationMessage extends StatelessWidget {
           color: _bgColor,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: _borderColor.withValues(alpha: 0.3)),
+          boxShadow: AppElevation.low,
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,

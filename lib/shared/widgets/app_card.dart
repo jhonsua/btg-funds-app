@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:btg_funds_app/core/theme/app_colors.dart';
+import 'package:btg_funds_app/core/theme/app_elevation.dart';
 import 'package:btg_funds_app/core/theme/app_spacing.dart';
+import 'package:btg_funds_app/shared/widgets/animated_press.dart';
 
 class AppCard extends StatelessWidget {
   const AppCard({
@@ -21,30 +23,24 @@ class AppCard extends StatelessWidget {
       color: AppColors.surface,
       borderRadius: BorderRadius.circular(12),
       border: Border.all(color: AppColors.border),
-      boxShadow: const [
-        BoxShadow(
-          color: Color(0x0A000000),
-          blurRadius: 12,
-          offset: Offset(0, 2),
-        ),
-      ],
+      boxShadow: AppElevation.low,
     );
 
-    final content = Padding(padding: padding, child: child);
+    final surface = Container(
+      decoration: decoration,
+      padding: padding,
+      child: child,
+    );
 
     if (onTap == null) {
-      return DecoratedBox(decoration: decoration, child: content);
+      return surface;
     }
 
-    return Material(
-      color: Colors.transparent,
-      child: Ink(
-        decoration: decoration,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
-          child: content,
-        ),
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: AnimatedPress(
+        onTap: onTap,
+        child: surface,
       ),
     );
   }

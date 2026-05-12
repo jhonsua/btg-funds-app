@@ -100,15 +100,18 @@ class _Chip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InputChip(
-      label: Text(label),
-      onDeleted: onRemove,
-      deleteIcon: const Icon(Icons.close, size: 16),
-      backgroundColor: emphasis
-          ? AppColors.brandGoldLight.withValues(alpha: 0.3)
-          : AppColors.surfaceElevated,
-      side: BorderSide(
-        color: emphasis ? AppColors.brandGoldDark : AppColors.border,
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: InputChip(
+        label: Text(label),
+        onDeleted: onRemove,
+        deleteIcon: const Icon(Icons.close, size: 16),
+        backgroundColor: emphasis
+            ? AppColors.brandGoldLight.withValues(alpha: 0.3)
+            : AppColors.surfaceElevated,
+        side: BorderSide(
+          color: emphasis ? AppColors.brandGoldDark : AppColors.border,
+        ),
       ),
     );
   }
