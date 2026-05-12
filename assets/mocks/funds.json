@@ -1,0 +1,37 @@
+[
+  {
+    "id": "1",
+    "name": "FPV_BTG_PACTUAL_RECAUDADORA",
+    "minimum_amount": 75000,
+    "category": "fpv",
+    "description": "Fondo de pensión voluntaria con perfil conservador, enfocado en preservación del capital."
+  },
+  {
+    "id": "2",
+    "name": "FPV_BTG_PACTUAL_ECOPETROL",
+    "minimum_amount": 125000,
+    "category": "fpv",
+    "description": "Fondo de pensión voluntaria con exposición al sector energético colombiano."
+  },
+  {
+    "id": "3",
+    "name": "DEUDAPRIVADA",
+    "minimum_amount": 50000,
+    "category": "fic",
+    "description": "Fondo de inversión colectiva en deuda privada corporativa de empresas colombianas."
+  },
+  {
+    "id": "4",
+    "name": "FDO-ACCIONES",
+    "minimum_amount": 250000,
+    "category": "fic",
+    "description": "Fondo de inversión colectiva con exposición a renta variable colombiana."
+  },
+  {
+    "id": "5",
+    "name": "FPV_BTG_PACTUAL_DINAMICA",
+    "minimum_amount": 100000,
+    "category": "fpv",
+    "description": "Fondo de pensión voluntaria con perfil dinámico, balance entre renta fija y variable."
+  }
+]
