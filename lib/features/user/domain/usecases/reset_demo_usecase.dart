@@ -10,11 +10,11 @@ class ResetDemoUseCase {
   final UserRepository _repository;
 
   Future<Either<Failure, UserState>> call() async {
-    // TODO Etapa 4: validar que no haya operaciones pendientes en
-    //   SubscriptionNotifier o TransactionsNotifier (SPEC_FUNCIONAL §7).
-    //   Cuando existan esos notifiers, inyectarlos aquí y retornar
-    //   BusinessFailure('Espera a que termine la operación actual.')
-    //   si alguno está en AsyncLoading.
+    // TODO Etapa futura: validar OperationLockRepository cross-feature
+    // (SPEC_FUNCIONAL §7). La UI (ProfileScreen, Etapa 6) mitiga
+    // parcialmente deshabilitando el botón "Restablecer" cuando hay
+    // SubscriptionLoading activo, pero un lock real cubriría también
+    // cancelaciones, transactions y futuras operaciones async.
     return _repository.resetToDefaults();
   }
 }

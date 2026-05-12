@@ -36,3 +36,10 @@ final getFundByIdUseCaseProvider = Provider<GetFundByIdUseCase>((ref) {
 // ── Notifier ──────────────────────────────────────────────────────────
 final fundsNotifierProvider =
     AsyncNotifierProvider<FundsNotifier, List<Fund>>(FundsNotifier.new);
+
+/// Provider familia para obtener un fondo por id. Lanza el [Failure] si
+/// el id no existe (lo cual se renderea como `AsyncError` en la UI).
+final fundByIdProvider = FutureProvider.family<Fund, String>((ref, id) async {
+  final result = await ref.watch(getFundByIdUseCaseProvider).call(id);
+  return result.fold((failure) => throw failure, (fund) => fund);
+});

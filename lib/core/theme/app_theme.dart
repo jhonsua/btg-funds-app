@@ -130,6 +130,38 @@ class AppTheme {
           borderRadius: BorderRadius.circular(8),
         ),
       ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: AppColors.surface,
+        surfaceTintColor: AppColors.surface,
+        titleTextStyle: AppTextStyles.headingMedium,
+        contentTextStyle: AppTextStyles.bodyMedium.copyWith(
+          color: AppColors.textSecondary,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+      ),
+      datePickerTheme: DatePickerThemeData(
+        backgroundColor: AppColors.surface,
+        surfaceTintColor: AppColors.surface,
+        headerBackgroundColor: AppColors.brandBlack,
+        headerForegroundColor: AppColors.textOnDark,
+        headerHeadlineStyle: AppTextStyles.headingMedium.copyWith(
+          color: AppColors.textOnDark,
+        ),
+        dayStyle: AppTextStyles.bodyMedium,
+        yearStyle: AppTextStyles.bodyMedium,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: AppColors.surface,
+        surfaceTintColor: AppColors.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+      ),
     );
   }
 }
