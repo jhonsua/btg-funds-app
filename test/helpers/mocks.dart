@@ -9,6 +9,7 @@ import 'package:btg_funds_app/features/funds/domain/usecases/get_funds_usecase.d
 import 'package:btg_funds_app/features/subscriptions/domain/repositories/subscription_repository.dart';
 import 'package:btg_funds_app/features/transactions/domain/repositories/transaction_repository.dart';
 import 'package:btg_funds_app/features/transactions/domain/usecases/add_transaction_usecase.dart';
+import 'package:btg_funds_app/features/transactions/domain/usecases/get_transactions_usecase.dart';
 import 'package:btg_funds_app/features/user/domain/repositories/user_repository.dart';
 import 'package:btg_funds_app/features/user/domain/usecases/get_user_usecase.dart';
 import 'package:btg_funds_app/features/user/domain/usecases/reset_demo_usecase.dart';
@@ -40,6 +41,9 @@ class MockSubscriptionRepository extends Mock
 class MockTransactionRepository extends Mock implements TransactionRepository {}
 
 class MockAddTransactionUseCase extends Mock implements AddTransactionUseCase {}
+
+class MockGetTransactionsUseCase extends Mock
+    implements GetTransactionsUseCase {}
 
 // Storage / infra
 class MockAtomicWrite extends Mock implements AtomicWrite {}

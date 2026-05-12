@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:btg_funds_app/features/subscriptions/presentation/notifiers/subscription_state.dart';
 import 'package:btg_funds_app/features/subscriptions/presentation/providers/providers.dart';
+import 'package:btg_funds_app/features/transactions/presentation/providers/providers.dart';
 import 'package:btg_funds_app/features/user/domain/entities/notification_channel.dart';
 import 'package:btg_funds_app/features/user/presentation/providers/providers.dart';
 
@@ -37,7 +38,7 @@ class SubscriptionNotifier extends Notifier<SubscriptionState> {
         state = SubscriptionState.success(subscription);
         ref.invalidate(userNotifierProvider);
         ref.invalidate(subscriptionsListNotifierProvider);
-        // TODO Etapa 5: invalidar transactionsNotifierProvider cuando exista.
+        ref.invalidate(transactionsNotifierProvider);
         return true;
       },
     );
@@ -59,7 +60,7 @@ class SubscriptionNotifier extends Notifier<SubscriptionState> {
         state = const SubscriptionState.cancelled();
         ref.invalidate(userNotifierProvider);
         ref.invalidate(subscriptionsListNotifierProvider);
-        // TODO Etapa 5: invalidar transactionsNotifierProvider cuando exista.
+        ref.invalidate(transactionsNotifierProvider);
         return true;
       },
     );

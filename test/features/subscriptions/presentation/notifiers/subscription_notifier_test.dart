@@ -9,15 +9,23 @@ import 'package:btg_funds_app/features/subscriptions/domain/usecases/cancel_subs
 import 'package:btg_funds_app/features/subscriptions/domain/usecases/subscribe_to_fund_usecase.dart';
 import 'package:btg_funds_app/features/subscriptions/presentation/notifiers/subscription_state.dart';
 import 'package:btg_funds_app/features/subscriptions/presentation/providers/providers.dart';
+import 'package:btg_funds_app/features/transactions/domain/entities/transaction.dart';
+import 'package:btg_funds_app/features/transactions/domain/entities/transaction_filter.dart';
+import 'package:btg_funds_app/features/transactions/presentation/providers/providers.dart';
 import 'package:btg_funds_app/features/user/domain/entities/notification_channel.dart';
+
+import '../../../../helpers/mocks.dart';
 
 class _MockSubscribe extends Mock implements SubscribeToFundUseCase {}
 
 class _MockCancel extends Mock implements CancelSubscriptionUseCase {}
 
+class _FakeFilter extends Fake implements TransactionFilter {}
+
 void main() {
   late _MockSubscribe subscribeUseCase;
   late _MockCancel cancelUseCase;
+  late MockGetTransactionsUseCase getTransactionsUseCase;
   late ProviderContainer container;
 
   final tClock = DateTime.utc(2026, 5, 12, 12);
@@ -32,15 +40,22 @@ void main() {
 
   setUpAll(() {
     registerFallbackValue(NotificationChannel.email);
+    registerFallbackValue(_FakeFilter());
   });
 
   setUp(() {
     subscribeUseCase = _MockSubscribe();
     cancelUseCase = _MockCancel();
+    getTransactionsUseCase = MockGetTransactionsUseCase();
+    when(
+      () => getTransactionsUseCase(any()),
+    ).thenAnswer((_) async => const Right(<Transaction>[]));
     container = ProviderContainer(
       overrides: [
         subscribeToFundUseCaseProvider.overrideWithValue(subscribeUseCase),
         cancelSubscriptionUseCaseProvider.overrideWithValue(cancelUseCase),
+        getTransactionsUseCaseProvider
+            .overrideWithValue(getTransactionsUseCase),
       ],
     );
     addTearDown(container.dispose);
@@ -122,5 +137,56 @@ void main() {
       );
       expect(notifier.lastError, isNull);
     });
+
+    test(
+      'subscribe exitoso invalida transactionsNotifierProvider '
+      '(re-ejecuta getTransactions tras el rebuild)',
+      () async {
+        when(
+          () => subscribeUseCase(
+            fundId: any(named: 'fundId'),
+            amount: any(named: 'amount'),
+            channel: any(named: 'channel'),
+          ),
+        ).thenAnswer((_) async => Right(tSub));
+
+        // 1. Pre: leer el future para que el provider construya y consuma 1 llamada.
+        await container.read(transactionsNotifierProvider.future);
+        verify(() => getTransactionsUseCase(any())).called(1);
+
+        // 2. Ejecutar la mutación.
+        await container.read(subscriptionNotifierProvider.notifier).subscribe(
+              fundId: 'f1',
+              amount: 100000,
+              channel: NotificationChannel.email,
+            );
+
+        // 3. Post: leer DE NUEVO el future para forzar rebuild tras invalidate.
+        await container.read(transactionsNotifierProvider.future);
+        verify(() => getTransactionsUseCase(any())).called(1);
+      },
+    );
+
+    test(
+      'cancel exitoso invalida transactionsNotifierProvider '
+      '(re-ejecuta getTransactions tras el rebuild)',
+      () async {
+        when(() => cancelUseCase(subscriptionId: any(named: 'subscriptionId')))
+            .thenAnswer((_) async => const Right(null));
+
+        // 1. Pre.
+        await container.read(transactionsNotifierProvider.future);
+        verify(() => getTransactionsUseCase(any())).called(1);
+
+        // 2. Mutación.
+        await container
+            .read(subscriptionNotifierProvider.notifier)
+            .cancel(subscriptionId: 'sub_1');
+
+        // 3. Post: segundo read fuerza el rebuild.
+        await container.read(transactionsNotifierProvider.future);
+        verify(() => getTransactionsUseCase(any())).called(1);
+      },
+    );
   });
 }
