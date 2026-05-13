@@ -1,0 +1,124 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version (sin v prefix, ej: 0.0.1-test)'
+        required: true
+        default: '0.0.1-test'
+
+permissions:
+  contents: write
+
+env:
+  FLUTTER_VERSION: '3.41.5'
+
+jobs:
+  build:
+    name: Build release artifacts
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    outputs:
+      build_name: ${{ steps.version.outputs.build_name }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+
+      - name: Determine version
+        id: version
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            # Tag push: extraer versión del tag (v0.0.1 → 0.0.1)
+            VERSION="${GITHUB_REF#refs/tags/v}"
+          else
+            # Manual dispatch: usar input
+            VERSION="${{ github.event.inputs.version }}"
+          fi
+          echo "build_name=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Building version: $VERSION"
+
+      - name: flutter pub get
+        run: flutter pub get
+
+      - name: Build all artifacts
+        run: bash scripts/release-build.sh
+        env:
+          FLAVOR: prod
+          BUILD_NAME: ${{ steps.version.outputs.build_name }}
+          BUILD_NUMBER: ${{ github.run_number }}
+          OUTPUT_DIR: ./release-artifacts
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts
+          path: release-artifacts/
+          retention-days: 7
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'   # solo en tag push, no en manual dispatch
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: release-artifacts
+          path: release-artifacts/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "v${{ needs.build.outputs.build_name }}"
+          body: |
+            ## BTG Funds App ${{ needs.build.outputs.build_name }}
+
+            Prueba técnica Flutter — vacante PersonalSoft / BTG Pactual.
+
+            ### Artifacts
+
+            - **APK**: instalable directamente en Android (debug-signed, requiere USB debugging)
+            - **AAB**: para subir a Google Play Console (Internal Testing → Production)
+            - **Web**: ZIP con build estático servible desde cualquier hosting
+
+            ### Demo en vivo
+
+            https://jhonsua.github.io/btg-funds-app/
+
+            ### Tests
+
+            - 171 unit tests + 7 integration tests = 179 verdes
+            - Coverage combined: 90.1%
+
+            > Nota: Esta versión usa debug signing como placeholder. La firma
+            > release con keystore production-grade se aplica desde v1.0.0.
+          draft: false
+          prerelease: ${{ contains(needs.build.outputs.build_name, '-') }}
+          files: |
+            release-artifacts/*.apk
+            release-artifacts/*.aab
+            release-artifacts/*.zip
