@@ -7,6 +7,7 @@ import 'package:btg_funds_app/core/utils/responsive.dart';
 import 'package:btg_funds_app/features/transactions/presentation/providers/providers.dart';
 import 'package:btg_funds_app/features/transactions/presentation/widgets/active_filters_chip.dart';
 import 'package:btg_funds_app/features/transactions/presentation/widgets/filter_bottom_sheet.dart';
+import 'package:btg_funds_app/features/transactions/presentation/widgets/filter_trigger_chip.dart';
 import 'package:btg_funds_app/features/transactions/presentation/widgets/transaction_card.dart';
 import 'package:btg_funds_app/features/transactions/presentation/widgets/transaction_card_skeleton.dart';
 import 'package:btg_funds_app/shared/widgets/app_empty_view.dart';
@@ -21,6 +22,15 @@ class TransactionsScreen extends ConsumerWidget {
     final notifier = ref.watch(transactionsNotifierProvider.notifier);
     final currentFilter = notifier.currentFilter;
 
+    Future<void> openFilters() async {
+      final result = await showFilterBottomSheet(
+        context,
+        current: currentFilter,
+      );
+      if (result == null) return;
+      await notifier.applyFilter(result);
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Historial'),
@@ -28,14 +38,7 @@ class TransactionsScreen extends ConsumerWidget {
           IconButton(
             tooltip: 'Filtrar',
             icon: const Icon(Icons.filter_list),
-            onPressed: () async {
-              final result = await showFilterBottomSheet(
-                context,
-                current: currentFilter,
-              );
-              if (result == null) return;
-              await notifier.applyFilter(result);
-            },
+            onPressed: openFilters,
           ),
         ],
       ),
@@ -43,6 +46,18 @@ class TransactionsScreen extends ConsumerWidget {
         context,
         Column(
           children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.md,
+                AppSpacing.sm,
+                AppSpacing.md,
+                AppSpacing.xs,
+              ),
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: FilterTriggerChip(onTap: openFilters),
+              ),
+            ),
             ActiveFiltersChips(filter: currentFilter),
             Expanded(
               child: txsAsync.when(
