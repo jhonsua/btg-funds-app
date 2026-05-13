@@ -229,7 +229,7 @@ La app no compila iOS en este alcance porque no tiene la configuración nativa X
 5. **Upload a App Store Connect:** vía Xcode Organizer, Transporter app o Fastlane `pilot` para TestFlight.
 6. **Distribución:** TestFlight (testers internos/externos) → revisión de Apple → App Store.
 
-La configuración iOS no se incluyó porque requiere Mac con Xcode + cuenta Apple Developer activa. El código Dart de la app es el mismo para Android e iOS (no se requiere `main_ios.dart` separado).
+
 
 ### Distribución a tiendas: estado actual y siguiente paso
 
