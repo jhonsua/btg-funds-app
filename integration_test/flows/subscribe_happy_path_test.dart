@@ -62,7 +62,8 @@ void main() {
         await tester.pump();
 
         // ── 8. Botón "Confirmar suscripción" habilitado ─────────────────
-        final confirmBtn = tester.widget<ElevatedButton>(confirmSubscribeButton);
+        final confirmBtn =
+            tester.widget<ElevatedButton>(confirmSubscribeButton);
         expect(confirmBtn.onPressed, isNotNull);
 
         // ── 9. Tap "Confirmar suscripción" ──────────────────────────────
