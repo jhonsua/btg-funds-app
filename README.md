@@ -207,20 +207,29 @@ Los artefactos generados están listos para los canales oficiales de distribuci�
 4. Promover sucesivamente: Internal → Closed Testing → Open Testing → Production.
 5. Cada release usa el mismo keystore (perderlo invalida todas las actualizaciones futuras).
 
-**Huawei AppGallery (Colombia):**
-
-Mercado relevante en Colombia por base instalada de dispositivos Huawei legacy (sin Google Services tras el ban de USA en 2019). El proceso de publicación es similar al de Google Play y consta de cuatro pasos:
+**Huawei AppGallery:**
 
 1. Crear cuenta de desarrollador en `developer.huawei.com` con verificación de identidad (cédula). La cuenta puede ser Individual o Enterprise. El registro es gratuito.
 2. Crear la app en AppGallery Connect con el `applicationId` (en este proyecto sería `com.personalsoft.btg.btg_funds_app`) y los metadatos básicos.
 3. Subir el artefacto (APK o AAB, ambos aceptados desde 2023), agregar screenshots (mínimo 3, máximo 2MB c/u), descripción y categoría.
 4. Enviar a revisión. El equipo de Huawei revisa en un plazo de 1 a 5 días y aprueba la publicación.
 
-Esta app no requiere integración con HMS Core (Push Kit, Map Kit, etc.) porque no usa servicios de Google que necesiten reemplazo. El APK universal generado por `release.yml` es compatible directamente con AppGallery sin modificaciones. Para automatizar el upload existe el plugin oficial `Huawei AppGallery Publish Gradle Plugin`, integrable en `release.yml` con credenciales adicionales.
-
 **App Store Connect (iOS):**
 
-La app no compila iOS en este alcance (`ios: false` en flutter_launcher_icons). Para habilitar iOS habría que: agregar `lib/main_ios.dart` o un flavor equivalente, configurar certificados de Apple Developer Program (USD $99 anuales), generar el IPA con `flutter build ipa`, y subir a App Store Connect para distribuir vía TestFlight antes de App Store.
+La app no compila iOS en este alcance porque no tiene la configuración nativa Xcode lista. Para habilitar iOS habría que:
+
+1. **Cuenta Apple Developer Program** (USD $99 anuales) con identifier de la app registrado.
+2. **Configuración Xcode** del proyecto en `ios/Runner.xcodeproj`:
+   - Bundle identifier matching con App Store Connect (ej: `com.personalsoft.btg.btg_funds_app`)
+   - Deployment target mínimo (iOS 12+ típicamente)
+   - Signing & Capabilities con certificados y provisioning profiles del equipo
+   - Configuración de targets (Runner para producción, eventuales targets de tests)
+3. **CocoaPods** instalado en el entorno macOS (`sudo gem install cocoapods` + `pod install` en `ios/`).
+4. **Build IPA:** `flutter build ipa --release --flavor prod` genera el IPA firmado en `build/ios/ipa/`.
+5. **Upload a App Store Connect:** vía Xcode Organizer, Transporter app o Fastlane `pilot` para TestFlight.
+6. **Distribución:** TestFlight (testers internos/externos) → revisión de Apple → App Store.
+
+La configuración iOS no se incluyó porque requiere Mac con Xcode + cuenta Apple Developer activa. El código Dart de la app es el mismo para Android e iOS (no se requiere `main_ios.dart` separado).
 
 ### Distribución a tiendas: estado actual y siguiente paso
 
