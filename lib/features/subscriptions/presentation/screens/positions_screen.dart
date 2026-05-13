@@ -18,6 +18,7 @@ class PositionsScreen extends ConsumerWidget {
     final subsAsync = ref.watch(subscriptionsListNotifierProvider);
 
     return Scaffold(
+      key: const ValueKey('positions-screen'),
       appBar: AppBar(title: const Text('Mis posiciones')),
       body: centeredOnDesktop(
         context,

@@ -152,6 +152,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final hasPendingOperation = subscriptionState is SubscriptionLoading;
 
     return Scaffold(
+      key: const ValueKey('profile-screen'),
       appBar: AppBar(title: const Text('Perfil')),
       resizeToAvoidBottomInset: true,
       body: centeredOnDesktop(

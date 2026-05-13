@@ -32,6 +32,7 @@ class TransactionsScreen extends ConsumerWidget {
     }
 
     return Scaffold(
+      key: const ValueKey('transactions-screen'),
       appBar: AppBar(
         title: const Text('Historial'),
         actions: [

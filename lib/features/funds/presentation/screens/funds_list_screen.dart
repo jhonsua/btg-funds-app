@@ -25,6 +25,7 @@ class FundsListScreen extends ConsumerWidget {
     final subscribedFundIds = subscriptions.map((s) => s.fundId).toSet();
 
     return Scaffold(
+      key: const ValueKey('funds-list-screen'),
       appBar: AppBar(title: const Text('BTG Pactual')),
       body: centeredOnDesktop(
         context,

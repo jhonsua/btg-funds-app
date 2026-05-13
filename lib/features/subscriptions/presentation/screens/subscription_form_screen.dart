@@ -127,6 +127,7 @@ class _SubscriptionFormScreenState
     final isSubmitting = subscriptionState is SubscriptionLoading;
 
     return Scaffold(
+      key: const ValueKey('subscription-form-screen'),
       appBar: AppBar(title: const Text('Suscripción')),
       resizeToAvoidBottomInset: true,
       body: centeredOnDesktop(

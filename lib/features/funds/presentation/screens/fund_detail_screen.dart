@@ -37,6 +37,7 @@ class FundDetailScreen extends ConsumerWidget {
             const <Subscription>[];
 
     return Scaffold(
+      key: const ValueKey('fund-detail-screen'),
       appBar: AppBar(title: const Text('Detalle de fondo')),
       body: centeredOnDesktop(
         context,
