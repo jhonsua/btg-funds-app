@@ -10,6 +10,7 @@ import 'package:btg_funds_app/features/subscriptions/domain/repositories/subscri
 import 'package:btg_funds_app/features/transactions/domain/repositories/transaction_repository.dart';
 import 'package:btg_funds_app/features/transactions/domain/usecases/add_transaction_usecase.dart';
 import 'package:btg_funds_app/features/transactions/domain/usecases/get_transactions_usecase.dart';
+import 'package:btg_funds_app/features/user/data/datasources/local_user_datasource.dart';
 import 'package:btg_funds_app/features/user/domain/repositories/user_repository.dart';
 import 'package:btg_funds_app/features/user/domain/usecases/get_user_usecase.dart';
 import 'package:btg_funds_app/features/user/domain/usecases/reset_demo_usecase.dart';
@@ -17,6 +18,8 @@ import 'package:btg_funds_app/features/user/domain/usecases/update_user_usecase.
 
 // User
 class MockUserRepository extends Mock implements UserRepository {}
+
+class MockLocalUserDatasource extends Mock implements LocalUserDatasource {}
 
 class MockGetUserUseCase extends Mock implements GetUserUseCase {}
 
