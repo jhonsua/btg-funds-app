@@ -1,11 +1,11 @@
 {
-    "name": "btg_funds_app",
-    "short_name": "btg_funds_app",
+    "name": "BTG Funds App",
+    "short_name": "BTG Funds",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0B0B0F",
     "theme_color": "#0B0B0F",
-    "description": "A new Flutter project.",
+    "description": "Demo de gestión de fondos FPV/FIC con suscripciones, cancelaciones y notificaciones multi-canal. Prueba técnica Flutter para PersonalSoft / BTG Pactual.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
