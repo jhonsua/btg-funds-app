@@ -23,6 +23,7 @@ dependencies:
 
 dev_dependencies:
   build_runner: ^2.4.13
+  flutter_launcher_icons: ^0.13.1
   flutter_lints: ^4.0.0
   flutter_test:
     sdk: flutter
@@ -48,3 +49,19 @@ flutter:
           weight: 600
         - asset: assets/fonts/Inter-Bold.ttf
           weight: 700
+
+flutter_launcher_icons:
+  android: "ic_launcher"
+  ios: false   # No publicamos a iOS, skip
+  image_path: "assets/images/btg-icon.png"
+
+  # Adaptive icon Android (API 26+)
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/images/btg-icon.png"
+
+  # Web favicon + PWA icons
+  web:
+    generate: true
+    image_path: "assets/images/btg-icon.png"
+    background_color: "#0B0B0F"   # AppColors.brandBlack
+    theme_color: "#0B0B0F"
