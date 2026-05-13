@@ -1,0 +1,23 @@
+# android/key.properties.example
+#
+# Template para signing local. Copiar como `key.properties` (sin
+# extensión .example) y rellenar con valores reales del keystore.
+#
+# IMPORTANTE: key.properties está en .gitignore. Nunca lo commitees.
+#
+# Para CI: los valores reales se inyectan vía GitHub Secrets:
+#   KEYSTORE_BASE64    base64 sin saltos de línea del upload-keystore.jks
+#   STORE_PASSWORD     password del keystore
+#   KEY_PASSWORD       password de la key dentro del keystore
+#   KEY_ALIAS          alias de la key (default: upload)
+#
+# Para uso local:
+#   1. Coloca tu upload-keystore.jks en android/app/upload-keystore.jks
+#   2. Copia este archivo como android/key.properties
+#   3. Rellena los valores reales
+#   4. flutter build apk --release --flavor prod -t lib/main_prod.dart
+
+storePassword=YOUR_STORE_PASSWORD
+keyPassword=YOUR_KEY_PASSWORD
+keyAlias=upload
+storeFile=upload-keystore.jks
