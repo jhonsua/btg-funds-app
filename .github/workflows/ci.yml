@@ -1,45 +1,64 @@
 name: CI
 
 on:
-  pull_request:
-    branches: [main, develop]
   push:
-    branches: [main, develop]
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
-  test:
+  ci:
+    name: format + analyze + unit tests
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
         with:
-          distribution: temurin
-          java-version: 17
+          distribution: 'temurin'
+          java-version: '17'
 
-      - uses: subosito/flutter-action@v2
+      - name: Setup Flutter 3.41.5
+        uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.41.5'
-          channel: stable
+          channel: 'stable'
           cache: true
 
-      - name: Get dependencies
+      - name: Cache pub-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
+      - name: flutter pub get
         run: flutter pub get
 
+      # Defensive: si en el futuro se agregan @freezed / @JsonSerializable, este step
+      # los genera. Hoy es operación nula (~5s overhead).
       - name: Generate code (freezed, json_serializable)
         run: dart run build_runner build --delete-conflicting-outputs
 
-      - name: Format check
+      - name: dart format check
         run: dart format --output=none --set-exit-if-changed .
 
-      - name: Analyze
+      - name: flutter analyze
         run: flutter analyze --fatal-infos
 
-      - name: Test with coverage
+      - name: flutter test --coverage
         run: flutter test --coverage
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+      - name: Upload coverage to Codecov (unit flag)
+        uses: codecov/codecov-action@v5
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage/lcov.info
+          flags: unit
+          name: unit-coverage
           fail_ci_if_error: false
