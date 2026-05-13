@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:btg_funds_app/core/constants/app_constants.dart';
 import 'package:btg_funds_app/core/theme/app_colors.dart';
 import 'package:btg_funds_app/core/theme/app_spacing.dart';
 import 'package:btg_funds_app/core/theme/app_text_styles.dart';
+import 'package:btg_funds_app/core/utils/formatters.dart';
 import 'package:btg_funds_app/core/utils/responsive.dart';
 import 'package:btg_funds_app/core/utils/validators.dart';
 import 'package:btg_funds_app/features/subscriptions/presentation/notifiers/subscription_state.dart';
@@ -105,9 +107,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Restablecer cuenta de demo'),
-        content: const Text(
-          'Volverás al saldo inicial de COP \$500.000 y se borrará tu '
-          'historial. ¿Continuar?',
+        content: Text(
+          'Volverás al estado inicial: saldo ${kInitialBalance.toCop()}, sin '
+          'posiciones activas y sin historial de transacciones. Tu perfil '
+          '(email, teléfono, canal) se mantiene.',
         ),
         actions: [
           TextButton(

@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:btg_funds_app/features/subscriptions/presentation/providers/providers.dart';
+import 'package:btg_funds_app/features/transactions/presentation/providers/providers.dart';
 import 'package:btg_funds_app/features/user/domain/entities/notification_channel.dart';
 import 'package:btg_funds_app/features/user/domain/entities/user_state.dart';
 import 'package:btg_funds_app/features/user/presentation/providers/providers.dart';
@@ -63,6 +65,11 @@ class UserNotifier extends AsyncNotifier<UserState> {
       (fresh) {
         lastError = null;
         state = AsyncData<UserState>(fresh);
+        // El reset limpia atómicamente balance + subscriptions + transactions.
+        // Invalidar los notifiers dependientes para que se reconstruyan con
+        // las listas vacías persistidas.
+        ref.invalidate(subscriptionsListNotifierProvider);
+        ref.invalidate(transactionsNotifierProvider);
         return true;
       },
     );

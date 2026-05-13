@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:btg_funds_app/core/storage/atomic_write.dart';
 import 'package:btg_funds_app/features/user/data/datasources/local_user_datasource.dart';
 import 'package:btg_funds_app/features/user/data/datasources/shared_prefs_user_datasource.dart';
 import 'package:btg_funds_app/features/user/data/repositories/user_repository_impl.dart';
@@ -45,7 +46,10 @@ final updateUserUseCaseProvider = Provider<UpdateUserUseCase>((ref) {
 });
 
 final resetDemoUseCaseProvider = Provider<ResetDemoUseCase>((ref) {
-  return ResetDemoUseCase(ref.watch(userRepositoryProvider));
+  return ResetDemoUseCase(
+    atomicWrite: ref.watch(atomicWriteProvider),
+    userRepository: ref.watch(userRepositoryProvider),
+  );
 });
 
 // ── Notifier ──────────────────────────────────────────────────────────
