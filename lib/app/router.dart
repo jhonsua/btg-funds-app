@@ -11,7 +11,7 @@ import 'package:btg_funds_app/features/transactions/presentation/screens/transac
 import 'package:btg_funds_app/features/user/presentation/screens/profile_screen.dart';
 
 /// Transición premium para push routes anidadas: fade + slide horizontal
-/// sutil 5% desde la derecha (skill btg-design-system §13).
+/// sutil 3% desde la derecha (skill btg-design-system §13).
 Widget _fadeSlideTransition(
   BuildContext context,
   Animation<double> animation,
@@ -22,10 +22,10 @@ Widget _fadeSlideTransition(
     opacity: animation,
     child: SlideTransition(
       position: Tween<Offset>(
-        begin: const Offset(0.05, 0),
+        begin: const Offset(0.03, 0),
         end: Offset.zero,
       ).animate(
-        CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+        CurvedAnimation(parent: animation, curve: Curves.easeOut),
       ),
       child: child,
     ),
@@ -50,7 +50,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                     path: ':fundId',
                     pageBuilder: (context, state) => CustomTransitionPage(
                       key: state.pageKey,
-                      transitionDuration: const Duration(milliseconds: 280),
+                      transitionDuration: const Duration(milliseconds: 220),
                       transitionsBuilder: _fadeSlideTransition,
                       child: FundDetailScreen(
                         fundId: state.pathParameters['fundId']!,
@@ -61,7 +61,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                         path: 'subscribe',
                         pageBuilder: (context, state) => CustomTransitionPage(
                           key: state.pageKey,
-                          transitionDuration: const Duration(milliseconds: 280),
+                          transitionDuration: const Duration(milliseconds: 220),
                           transitionsBuilder: _fadeSlideTransition,
                           child: SubscriptionFormScreen(
                             fundId: state.pathParameters['fundId']!,
