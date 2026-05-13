@@ -121,7 +121,7 @@ class AppTheme {
         ),
       ),
       snackBarTheme: SnackBarThemeData(
-        behavior: SnackBarBehavior.floating,
+        behavior: SnackBarBehavior.fixed,
         backgroundColor: AppColors.brandBlack,
         contentTextStyle: AppTextStyles.bodyMedium.copyWith(
           color: AppColors.textOnDark,
