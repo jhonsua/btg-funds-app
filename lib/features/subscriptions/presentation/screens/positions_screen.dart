@@ -6,9 +6,9 @@ import 'package:btg_funds_app/core/theme/app_spacing.dart';
 import 'package:btg_funds_app/core/utils/responsive.dart';
 import 'package:btg_funds_app/features/subscriptions/presentation/providers/providers.dart';
 import 'package:btg_funds_app/features/subscriptions/presentation/widgets/position_card.dart';
+import 'package:btg_funds_app/features/subscriptions/presentation/widgets/position_card_skeleton.dart';
 import 'package:btg_funds_app/shared/widgets/app_empty_view.dart';
 import 'package:btg_funds_app/shared/widgets/app_error_view.dart';
-import 'package:btg_funds_app/shared/widgets/app_loading.dart';
 
 class PositionsScreen extends ConsumerWidget {
   const PositionsScreen({super.key});
@@ -22,7 +22,20 @@ class PositionsScreen extends ConsumerWidget {
       body: centeredOnDesktop(
         context,
         subsAsync.when(
-          loading: () => const AppLoading(),
+          loading: () => ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(
+              screenPadding(context).left,
+              AppSpacing.md,
+              screenPadding(context).right,
+              AppSpacing.lg,
+            ),
+            itemCount: 3,
+            itemBuilder: (ctx, _) => const Padding(
+              padding: EdgeInsets.only(bottom: AppSpacing.sm),
+              child: PositionCardSkeleton(),
+            ),
+          ),
           error: (e, _) => AppErrorView(message: e.toString()),
           data: (subs) {
             if (subs.isEmpty) {

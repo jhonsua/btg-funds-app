@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:btg_funds_app/core/theme/app_colors.dart';
 import 'package:btg_funds_app/core/theme/app_spacing.dart';
 import 'package:btg_funds_app/core/utils/responsive.dart';
 import 'package:btg_funds_app/features/transactions/presentation/providers/providers.dart';
 import 'package:btg_funds_app/features/transactions/presentation/widgets/active_filters_chip.dart';
 import 'package:btg_funds_app/features/transactions/presentation/widgets/filter_bottom_sheet.dart';
 import 'package:btg_funds_app/features/transactions/presentation/widgets/transaction_card.dart';
+import 'package:btg_funds_app/features/transactions/presentation/widgets/transaction_card_skeleton.dart';
 import 'package:btg_funds_app/shared/widgets/app_empty_view.dart';
 import 'package:btg_funds_app/shared/widgets/app_error_view.dart';
-import 'package:btg_funds_app/shared/widgets/app_skeleton.dart';
 
 class TransactionsScreen extends ConsumerWidget {
   const TransactionsScreen({super.key});
@@ -47,12 +46,18 @@ class TransactionsScreen extends ConsumerWidget {
             ActiveFiltersChips(filter: currentFilter),
             Expanded(
               child: txsAsync.when(
-                loading: () => _TransactionsLoadingSkeleton(
+                loading: () => ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
                   padding: EdgeInsets.fromLTRB(
                     screenPadding(context).left,
                     AppSpacing.sm,
                     screenPadding(context).right,
                     AppSpacing.lg,
+                  ),
+                  itemCount: 6,
+                  itemBuilder: (ctx, _) => const Padding(
+                    padding: EdgeInsets.only(bottom: AppSpacing.sm),
+                    child: TransactionCardSkeleton(),
                   ),
                 ),
                 error: (e, _) => AppErrorView(
@@ -117,55 +122,6 @@ class TransactionsScreen extends ConsumerWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Skeleton shimmer que imita la estructura del `TransactionCard`
-/// (badge + fecha + nombre fondo + monto). Reemplaza el spinner genérico
-/// durante el loading inicial (skill §14).
-class _TransactionsLoadingSkeleton extends StatelessWidget {
-  const _TransactionsLoadingSkeleton({required this.padding});
-
-  final EdgeInsetsGeometry padding;
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      physics: const NeverScrollableScrollPhysics(),
-      padding: padding,
-      child: Column(
-        children: List.generate(
-          4,
-          (_) => Padding(
-            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-            child: Container(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.border),
-              ),
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      AppSkeleton(width: 80, height: 20, borderRadius: 4),
-                      SizedBox(width: AppSpacing.sm),
-                      AppSkeleton(width: 100, height: 14),
-                    ],
-                  ),
-                  SizedBox(height: AppSpacing.sm),
-                  AppSkeleton(width: 180, height: 16),
-                  SizedBox(height: AppSpacing.xs),
-                  AppSkeleton(width: 120, height: 18),
-                ],
-              ),
-            ),
-          ),
         ),
       ),
     );

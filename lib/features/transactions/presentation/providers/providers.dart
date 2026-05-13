@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:btg_funds_app/core/clock.dart';
+import 'package:btg_funds_app/core/config/app_config.dart';
 import 'package:btg_funds_app/core/uuid_provider.dart';
 import 'package:btg_funds_app/features/transactions/data/datasources/local_transaction_datasource.dart';
 import 'package:btg_funds_app/features/transactions/data/datasources/shared_prefs_transaction_datasource.dart';
@@ -16,6 +17,7 @@ final localTransactionDatasourceProvider =
     Provider<LocalTransactionDatasource>((ref) {
   return SharedPrefsTransactionDatasource(
     ref.watch(sharedPreferencesProvider),
+    latency: ref.watch(appConfigProvider).simulatedLatency,
   );
 });
 

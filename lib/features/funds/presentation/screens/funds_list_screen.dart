@@ -7,11 +7,11 @@ import 'package:btg_funds_app/core/theme/app_text_styles.dart';
 import 'package:btg_funds_app/core/utils/responsive.dart';
 import 'package:btg_funds_app/features/funds/presentation/providers/providers.dart';
 import 'package:btg_funds_app/features/funds/presentation/widgets/fund_card.dart';
+import 'package:btg_funds_app/features/funds/presentation/widgets/fund_card_skeleton.dart';
 import 'package:btg_funds_app/features/subscriptions/domain/entities/subscription.dart';
 import 'package:btg_funds_app/features/subscriptions/presentation/providers/providers.dart';
 import 'package:btg_funds_app/features/user/presentation/widgets/home_dashboard_section.dart';
 import 'package:btg_funds_app/shared/widgets/app_error_view.dart';
-import 'package:btg_funds_app/shared/widgets/app_loading.dart';
 
 class FundsListScreen extends ConsumerWidget {
   const FundsListScreen({super.key});
@@ -29,7 +29,35 @@ class FundsListScreen extends ConsumerWidget {
       body: centeredOnDesktop(
         context,
         fundsAsync.when(
-          loading: () => const AppLoading(),
+          loading: () => ListView(
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              const HomeDashboardSection(),
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                  screenPadding(context).left,
+                  AppSpacing.md,
+                  screenPadding(context).right,
+                  AppSpacing.sm,
+                ),
+                child: const Text(
+                  'Fondos disponibles',
+                  style: AppTextStyles.headingMedium,
+                ),
+              ),
+              for (var i = 0; i < 5; i++)
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    screenPadding(context).left,
+                    0,
+                    screenPadding(context).right,
+                    AppSpacing.sm,
+                  ),
+                  child: const FundCardSkeleton(),
+                ),
+              const SizedBox(height: AppSpacing.lg),
+            ],
+          ),
           error: (e, _) => AppErrorView(
             message: e.toString(),
             onRetry: () => ref.read(fundsNotifierProvider.notifier).refresh(),

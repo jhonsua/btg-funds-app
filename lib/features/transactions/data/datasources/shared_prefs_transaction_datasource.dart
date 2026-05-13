@@ -8,12 +8,26 @@ import 'package:btg_funds_app/features/transactions/data/datasources/local_trans
 import 'package:btg_funds_app/features/transactions/data/models/transaction_model.dart';
 
 class SharedPrefsTransactionDatasource implements LocalTransactionDatasource {
-  SharedPrefsTransactionDatasource(this._prefs);
+  SharedPrefsTransactionDatasource(
+    this._prefs, {
+    Duration latency = Duration.zero,
+  }) : _latency = latency;
 
   final SharedPreferences _prefs;
+  final Duration _latency;
 
   @override
   Future<List<TransactionModel>> getTransactions() async {
+    // Delay simulado para mostrar loading state premium (skeleton shimmer).
+    // Solo aplica a la lectura pública. `addTransaction` (mutación) usa
+    // `_readAllInternal` para evitar el delay y sentirse instantánea.
+    if (_latency > Duration.zero) {
+      await Future<void>.delayed(_latency);
+    }
+    return _readAllInternal();
+  }
+
+  Future<List<TransactionModel>> _readAllInternal() async {
     try {
       final raw = _prefs.getString(StorageKeys.userTransactions);
       if (raw == null || raw.isEmpty) return const [];
@@ -36,7 +50,7 @@ class SharedPrefsTransactionDatasource implements LocalTransactionDatasource {
   @override
   Future<void> addTransaction(TransactionModel model) async {
     try {
-      final current = await getTransactions();
+      final current = await _readAllInternal();
       final updated = [...current, model];
       final encoded = jsonEncode(updated.map((m) => m.toJson()).toList());
       final ok = await _prefs.setString(StorageKeys.userTransactions, encoded);

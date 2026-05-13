@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:btg_funds_app/core/clock.dart';
+import 'package:btg_funds_app/core/config/app_config.dart';
 import 'package:btg_funds_app/core/storage/atomic_write.dart';
 import 'package:btg_funds_app/core/uuid_provider.dart';
 import 'package:btg_funds_app/features/funds/presentation/providers/providers.dart';
@@ -23,6 +24,7 @@ final localSubscriptionDatasourceProvider =
     Provider<LocalSubscriptionDatasource>((ref) {
   return SharedPrefsSubscriptionDatasource(
     ref.watch(sharedPreferencesProvider),
+    latency: ref.watch(appConfigProvider).simulatedLatency,
   );
 });
 
