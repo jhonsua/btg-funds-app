@@ -83,21 +83,10 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: |
-            # Retry policy: hasta 3 intentos
-            ATTEMPT=1
-            MAX_ATTEMPTS=3
-            until [ $ATTEMPT -gt $MAX_ATTEMPTS ]; do
-              echo "=== Intento $ATTEMPT de $MAX_ATTEMPTS ==="
-              flutter test --coverage integration_test/ --flavor dev && exit 0
-              ATTEMPT=$((ATTEMPT + 1))
-              if [ $ATTEMPT -le $MAX_ATTEMPTS ]; then
-                echo "Test falló, esperando 10s antes de retry..."
-                sleep 10
-              fi
-            done
-            echo "=== Todos los intentos fallaron ==="
-            exit 1
+          # NOTA: android-emulator-runner ejecuta cada línea de `script:` como
+          # comando independiente (/usr/bin/sh -c <line>), lo cual rompe
+          # construcciones multi-línea. Delegamos a un script bash externo.
+          script: bash scripts/run_integration_tests.sh
 
       - name: Upload coverage to Codecov (integration flag)
         if: success()
